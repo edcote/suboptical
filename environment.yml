@@ -1,0 +1,19 @@
+name: suboptical
+channels:
+  - conda-forge
+  - hcc
+dependencies:
+  - bison
+  - clang-format
+  - flex
+  - gcc==14.3.0
+  - gxx==14.3.0
+  - hcc:xorriso
+  - make
+  - nodejs
+  - python
+  - shellcheck
+  - texinfo
+  - unzip
+  - zip
+  - zlib

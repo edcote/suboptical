@@ -1,0 +1,6 @@
+black
+conventional-pre-commit
+mdformat
+mypy
+pre-commit
+python-dotenv

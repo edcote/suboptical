@@ -1,0 +1,8 @@
+*~
+.*.swp
+.done_env_setup
+.env
+.venv*/
+build/
+include/build_info.h
+out/
