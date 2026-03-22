@@ -43,5 +43,7 @@ bool SystemContext::Init() {
     return false;
   }
 
+  resource_manager_ = std::make_unique<resource::ResourceManager>();
+
   return true;
 }

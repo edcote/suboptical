@@ -30,9 +30,13 @@ This repository contains a development environment for 32-bit DOS demoscene demo
   - Variables: `snake_case`
   - Constants: `kCamelCase` with `k` prefix (e.g., `kVgaStatusRegisterPort`)
   - Member Variables: `snake_case_` with trailing underscore.
+- **Python Style:** Adhere strictly to the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html). Use 2-space indentation. Descriptive names are preferred. Ensure proper docstrings and type hints where applicable.
 - **Formatting:** Adheres to `.clang-format`. Use 2-space indentation.
 - **Header Guards:** Use `#pragma once`.
 - **Error Handling:** Log errors using `LogError` (from `include/logger.h`) and return `nullptr` or `false` for initialization failures.
+- **Floating Point:** Avoid using `float` or `double`. Use fixed-point or integer arithmetic instead, as the target i386 hardware may not have an FPU.
+- **Comments:** Follow the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) for comments. Use `//` for all comments, ensure a space after `//`, and use proper capitalization and punctuation for descriptive comments.
+  - **Hardware Registers:** When programming hardware registers (e.g., VGA, PIT), use a structured format: `// Index [ii], [Register Name]: [Value] - [Description].` (Example: `// Index 0x01, H-Display-End: 0x1F (31 chars * 8 dots = 256 pixels).`).
 - **ETL Usage:** Prefer ETL containers and utilities over the Standard Template Library (STL) where appropriate for memory efficiency and deterministic behavior, though STL is used (e.g., `std::unique_ptr`).
 
 ## Development Workflow
@@ -42,6 +46,7 @@ This repository contains a development environment for 32-bit DOS demoscene demo
 - **Testing/Debugging:** You can run and debug the final executable in a DOS emulator such as dosemu.
   - Run with: `dosemu -dumb build/supademo.exe`
 - **Pre-commit:** Run `pre-commit run --all-files` before committing changes.
+- **Git Operations:** You MUST NOT perform any git operations (add, commit, push, etc.) without explicit instructions from the user.
 
 ## Directory Structure
 

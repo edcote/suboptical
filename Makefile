@@ -5,8 +5,13 @@ OBJ_DIR            := build/obj
 BIN_DIR            := build
 TARGET_EXE         := $(BIN_DIR)/supademo.exe
 TARGET_ISO         := $(BIN_DIR)/supademo.iso
+TARGET_BUNDLE      := $(BIN_DIR)/data.sb
 BUILD_NUMBER_FILE  := build_number.txt
 BUILD_INFO_HEADER  := include/build_info.h
+
+# Asset definitions for the SubBundle archive.
+RAW_ASSETS         := requirements.txt
+RLE_ASSETS         := README.md
 
 DJGPP_PREFIX       ?= $(HOME)/.local/djgpp
 DJGPP_TOOLS_PREFIX ?= $(DJGPP_PREFIX)/bin/i586-pc-msdosdjgpp-
@@ -32,7 +37,7 @@ SRCS_CXX := $(shell find $(SRC_DIR) -name "*.cc")
 OBJS := $(SRCS_CXX:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-all: update_build_number $(TARGET_EXE) $(TARGET_ISO)
+all: update_build_number $(TARGET_EXE) $(TARGET_ISO) $(TARGET_BUNDLE)
 	@echo $(BUILD_MSG)
 	@$(MAKE) $(TARGET_EXE) --no-print-directory
 
@@ -50,6 +55,10 @@ $(TARGET_EXE): $(OBJS)
 	@$(STRIP) --strip-all $@
 	@chmod -x $@
 
+$(TARGET_BUNDLE): $(RAW_ASSETS) $(RLE_ASSETS) scripts/sbpack.py
+	@mkdir -p $(BIN_DIR)
+	python3 scripts/sbpack.py --output $@ --raw $(RAW_ASSETS) --rle $(RLE_ASSETS)
+
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -62,7 +71,7 @@ $(TARGET_ISO): $(TARGET_EXE)
 	@echo "Build number $(BUILD_NUMBER_FILE)"
 
 run:
-	@dosemu -dumb $(TARGET_EXE)
+	@dosemu -S $(TARGET_EXE)
 
 clean:
 	@rm -rf $(OBJ_DIR) $(BIN_DIR)

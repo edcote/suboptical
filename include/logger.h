@@ -45,8 +45,20 @@ inline void _LogError(const std::source_location location, const char* format,
   va_end(args);
 }
 
+inline void _LogDebug(const std::source_location location, const char* format,
+                      ...) {
+  va_list args;
+  va_start(args, format);
+  _Log(stderr, "DEBUG", location, format, args);
+  fflush(stderr);
+  va_end(args);
+}
+
 #define LogInfo(format, ...) \
   _LogInfo(std::source_location::current(), format, ##__VA_ARGS__)
 
 #define LogError(format, ...) \
   _LogError(std::source_location::current(), format, ##__VA_ARGS__)
+
+#define LogDebug(format, ...) \
+  _LogDebug(std::source_location::current(), format, ##__VA_ARGS__)

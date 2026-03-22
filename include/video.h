@@ -6,7 +6,7 @@ namespace video {
 
 constexpr int kMode13h = 0x13;
 constexpr int kMode03h = 0x03;
-constexpr int kPageSize = 320 * 240 / 4;
+constexpr int kPageSize = 256 * 200 / 4;
 
 // Gets current video mode via BIOS.
 int GetVideoMode();
