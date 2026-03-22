@@ -7,12 +7,10 @@
 
 #include "include/logger.h"
 
-namespace {
-}  // namespace
+namespace {}  // namespace
 
 SystemContext::SystemContext()
-    : original_video_mode_(0x03),
-      timers_installed_(false) {}
+    : original_video_mode_(0x03), timers_installed_(false) {}
 
 std::unique_ptr<SystemContext> SystemContext::Create() {
   auto context = std::unique_ptr<SystemContext>(new SystemContext());

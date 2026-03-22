@@ -1,7 +1,7 @@
-#include <cstdint>
+#include <dos.h>
 #include <stdio.h>
 
-#include <dos.h>
+#include <cstdint>
 
 #include "include/build_info.h"
 #include "include/bundle.h"

@@ -1,6 +1,7 @@
-black
 conventional-pre-commit
+detect-secrets
 mdformat
 mypy
 pre-commit
 python-dotenv
+yapf

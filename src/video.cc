@@ -81,8 +81,8 @@ bool Video::InitModeX() {
   // Index 0x02, Sequencer Map Mask: 0x0F (enable all 4 planes for writing).
   outportw(kSequencerIndexPort, 0x0F02);
 
-  vga_memory_ = reinterpret_cast<uint8_t*>(__djgpp_conventional_base +
-                                           kVgaMemoryAddress);
+  vga_memory_ =
+      reinterpret_cast<uint8_t*>(__djgpp_conventional_base + kVgaMemoryAddress);
 
   // Set Mode-X 256x200 horizontal timing tweaks.
   // Index 0x01, H-Display-End: 0x1F (31 chars * 8 dots = 256 pixels).

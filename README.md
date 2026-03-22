@@ -20,6 +20,8 @@ Run `scripts/install_packages.sh` to install required packages such as dosemu2.
 
 ### Pre-commit hooks
 
+Run `pre-commit install` to enable the pre-commit hooks.
+
 Run pre-commit on all files: `pre-commit run --all-files`.
 
 Run single pre-commit hook on one or more files: `pre-commit run shellcheck --files env_*.sh`.
@@ -29,4 +31,3 @@ Run single pre-commit hook on one or more files: `pre-commit run shellcheck --fi
 Launch development environment shell using `env_shell.sh`.
 
 Build using `make all`. Optionally clean using `make clean`.
-

@@ -5,6 +5,7 @@ channels:
 dependencies:
   - bison
   - clang-format
+  - cppcheck
   - flex
   - gcc==14.3.0
   - gxx==14.3.0
