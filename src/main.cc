@@ -4,7 +4,7 @@
 #include <cstdint>
 
 #include "include/build_info.h"
-#include "include/bundle.h"
+#include "include/bundle_reader.h"
 #include "include/input.h"
 #include "include/logger.h"
 #include "include/system_context.h"

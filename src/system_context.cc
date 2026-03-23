@@ -7,8 +7,6 @@
 
 #include "include/logger.h"
 
-namespace {}  // namespace
-
 SystemContext::SystemContext()
     : original_video_mode_(0x03), timers_installed_(false) {}
 

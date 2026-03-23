@@ -54,7 +54,6 @@ void TimerISR() {
   if (SystemContext::frame_accumulator_ >= 1000) {
     SystemContext::frame_accumulator_ =
         SystemContext::frame_accumulator_ - 1000;
-    // TODO: edc - Shouldn't this be a function?
     video::Video::frame_count_ = video::Video::frame_count_ + 1;
   }
 
