@@ -42,9 +42,9 @@ This repository contains a development environment for 32-bit DOS demoscene demo
 ## Development Workflow
 
 - **Environment Setup:** Use `env_shell.sh` to enter the development environment.
-- **Building:** Run `make all` to generate `build/supademo.exe` and `build/supademo.iso`.
+- **Building:** Run `make all` to generate `build/subdemo3.exe` and `build/subdemo3.iso`.
 - **Testing/Debugging:** You can run and debug the final executable in a DOS emulator such as dosemu.
-  - Run with: `dosemu -dumb build/supademo.exe`
+  - Run with: `dosemu -S build/subdemo3.exe`
 - **Pre-commit:** Run `pre-commit run --all-files` before committing changes.
 - **Git Operations:** You MUST NOT perform any git operations (add, commit, push, etc.) without explicit instructions from the user.
 

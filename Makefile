@@ -3,8 +3,8 @@
 SRC_DIR            := src
 OBJ_DIR            := build/obj
 BIN_DIR            := build
-TARGET_EXE         := $(BIN_DIR)/supademo.exe
-TARGET_ISO         := $(BIN_DIR)/supademo.iso
+TARGET_EXE         := $(BIN_DIR)/subdemo3.exe
+TARGET_ISO         := $(BIN_DIR)/subdemo3.iso
 TARGET_BUNDLE      := $(BIN_DIR)/data.sb
 BUILD_NUMBER_FILE  := build_number.txt
 BUILD_INFO_HEADER  := include/build_info.h
@@ -70,7 +70,7 @@ $(TARGET_ISO): $(TARGET_EXE)
 	@du -sh $(TARGET_EXE)
 	@echo "Build number $(BUILD_NUMBER_FILE)"
 
-run:
+run: $(TARGET_EXE)
 	@dosemu -S $(TARGET_EXE)
 
 clean:

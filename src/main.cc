@@ -11,7 +11,7 @@
 #include "include/video.h"
 
 int main(void) {
-  LogInfo("supademo[build %d]", BUILD_NUMBER);
+  LogInfo("subdemo3[build %d]", BUILD_NUMBER);
 
   uint32_t frames_drawn = 0;
   uint64_t start_time = 0;
