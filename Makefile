@@ -55,9 +55,9 @@ $(TARGET_EXE): $(OBJS)
 	@$(STRIP) --strip-all $@
 	@chmod -x $@
 
-$(TARGET_BUNDLE): $(RAW_ASSETS) $(RLE_ASSETS) scripts/sbpack.py
+$(TARGET_BUNDLE): $(RAW_ASSETS) $(RLE_ASSETS) tools/sb_pack.py
 	@mkdir -p $(BIN_DIR)
-	python3 scripts/sbpack.py --output $@ --raw $(RAW_ASSETS) --rle $(RLE_ASSETS)
+	python3 tools/sb_pack.py --output $@ --raw $(RAW_ASSETS) --rle $(RLE_ASSETS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
 	@mkdir -p $(dir $@)

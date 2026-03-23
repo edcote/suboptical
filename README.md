@@ -20,7 +20,7 @@ Run `scripts/install_packages.sh` to install required packages such as dosemu2.
 
 ### Pre-commit hooks
 
-Run `pre-commit install` to enable the pre-commit hooks.
+Run `pre-commit install --install-hooks --hook-type pre-commit --hook-type commit-msg` to enable the pre-commit and commit-msg hooks.
 
 Run pre-commit on all files: `pre-commit run --all-files`.
 
