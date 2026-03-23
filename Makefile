@@ -5,13 +5,20 @@ OBJ_DIR            := build/obj
 BIN_DIR            := build
 TARGET_EXE         := $(BIN_DIR)/subdemo3.exe
 TARGET_ISO         := $(BIN_DIR)/subdemo3.iso
-TARGET_BUNDLE      := $(BIN_DIR)/data.sb
+TARGET_IMG         := $(BIN_DIR)/subdemo3.img
+RES_DIR            := resources
+TARGET_BUNDLE      := $(RES_DIR)/subdata3.sb
 BUILD_NUMBER_FILE  := build_number.txt
 BUILD_INFO_HEADER  := include/build_info.h
 
+# Fonts to generate: List of stems.
+# Each must have a corresponding .ttf in $(RES_DIR)
+FONTS              := djvumono
+FONT_BINS          := $(patsubst %,$(RES_DIR)/%.bin,$(FONTS))
+
 # Asset definitions for the SubBundle archive.
-RAW_ASSETS         := requirements.txt
-RLE_ASSETS         := README.md
+RAW_ASSETS         :=
+RLE_ASSETS         := $(FONT_BINS)
 
 DJGPP_PREFIX       ?= $(HOME)/.local/djgpp
 DJGPP_TOOLS_PREFIX ?= $(DJGPP_PREFIX)/bin/i586-pc-msdosdjgpp-
@@ -37,9 +44,11 @@ SRCS_CXX := $(shell find $(SRC_DIR) -name "*.cc")
 OBJS := $(SRCS_CXX:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-all: update_build_number $(TARGET_EXE) $(TARGET_ISO) $(TARGET_BUNDLE)
+all: update_build_number $(TARGET_EXE) $(TARGET_ISO) $(TARGET_IMG) $(TARGET_BUNDLE)
 	@echo $(BUILD_MSG)
 	@$(MAKE) $(TARGET_EXE) --no-print-directory
+
+release: $(TARGET_ISO) $(TARGET_IMG)
 
 # Read build number from file and increment it. Then write the build number to a
 # header file.
@@ -55,18 +64,29 @@ $(TARGET_EXE): $(OBJS)
 	@$(STRIP) --strip-all $@
 	@chmod -x $@
 
-$(TARGET_BUNDLE): $(RAW_ASSETS) $(RLE_ASSETS) tools/sb_pack.py
-	@mkdir -p $(BIN_DIR)
+# Pattern rule for generating fonts.
+$(RES_DIR)/%.bin: $(RES_DIR)/%.ttf tools/gen_font_atlas.py
+	@mkdir -p $(RES_DIR)
+	python3 tools/gen_font_atlas.py --output_dir $(RES_DIR) --stem $* --font $<
+
+$(TARGET_BUNDLE): $(FONT_BINS) tools/sb_pack.py
 	python3 tools/sb_pack.py --output $@ --raw $(RAW_ASSETS) --rle $(RLE_ASSETS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(TARGET_ISO): $(TARGET_EXE)
+$(TARGET_ISO): $(TARGET_EXE) $(TARGET_BUNDLE) resources/file_id.diz
 	@mkdir -p $(BIN_DIR)/release
-	@cp -f $(TARGET_EXE) $(BIN_DIR)/release
+	@cp -f $(TARGET_EXE) $(TARGET_BUNDLE) resources/file_id.diz $(BIN_DIR)/release
 	@xorriso -report_about sorry -outdev $(TARGET_ISO) -blank as_needed -map $(BIN_DIR)/release /
+
+$(TARGET_IMG): $(TARGET_EXE) $(TARGET_BUNDLE) resources/file_id.diz
+	@mkdir -p $(BIN_DIR)/release
+	@rm -f $@
+	@truncate -s 1440k $@
+	@mformat -i $@ -f 1440 ::
+	@mcopy -i $@ $(TARGET_EXE) $(TARGET_BUNDLE) resources/file_id.diz ::
 	@du -sh $(TARGET_EXE)
 	@echo "Build number $(BUILD_NUMBER_FILE)"
 

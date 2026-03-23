@@ -2,6 +2,7 @@ conventional-pre-commit
 detect-secrets
 mdformat
 mypy
+Pillow
 pre-commit
 python-dotenv
 yapf
