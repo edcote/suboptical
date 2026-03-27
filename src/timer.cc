@@ -44,18 +44,10 @@ bool LockRegion(void* address, size_t length) {
 _go32_dpmi_seginfo SystemContext::original_timer_isr_;
 _go32_dpmi_seginfo SystemContext::timer_isr_;
 volatile uint64_t SystemContext::timer_ticks_ = 0;
-volatile int SystemContext::frame_accumulator_ = 0;
 
 extern "C" {
 void TimerISR() {
   SystemContext::timer_ticks_ = SystemContext::timer_ticks_ + 1;
-
-  SystemContext::frame_accumulator_ = SystemContext::frame_accumulator_ + 30;
-  if (SystemContext::frame_accumulator_ >= 1000) {
-    SystemContext::frame_accumulator_ =
-        SystemContext::frame_accumulator_ - 1000;
-    video::Video::frame_count_ = video::Video::frame_count_ + 1;
-  }
 
   outportb(kPic1CommandPort, kPicEndOfInterrupt);
 
@@ -82,13 +74,7 @@ bool SystemContext::StartTimers() {
       !LockRegion(reinterpret_cast<void*>(&original_timer_isr_),
                   sizeof(original_timer_isr_)) ||
       !LockRegion(reinterpret_cast<void*>(const_cast<uint64_t*>(&timer_ticks_)),
-                  sizeof(timer_ticks_)) ||
-      !LockRegion(reinterpret_cast<void*>(
-                      const_cast<uint32_t*>(&video::Video::frame_count_)),
-                  sizeof(video::Video::frame_count_)) ||
-      !LockRegion(
-          reinterpret_cast<void*>(const_cast<int*>(&frame_accumulator_)),
-          sizeof(frame_accumulator_))) {
+                  sizeof(timer_ticks_))) {
     return false;
   }
 

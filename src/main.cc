@@ -30,31 +30,41 @@ int main(void) {
     }
 
     start_time = SystemContext::GetTimeNanoseconds();
-    uint64_t last_time = start_time;
-    // Cap at ~30 FPS. If elapsed time is less than 33.3ms, we skip drawing.
-    const uint64_t kWaitNs = 33333333ULL;
+    const uint64_t kFrameDurationNs = 1000000000ULL / 30;
+    uint64_t next_frame_time = start_time;
 
-    while (true) {
-      if (input::IsEscapePressed()) {
-        break;
-      }
-
+    while (!input::IsEscapePressed()) {
+      bool need_render = false;
       const uint64_t current_time = SystemContext::GetTimeNanoseconds();
-      if (current_time - last_time < kWaitNs) {
-        continue;
+
+      // Fixed-step logic update (30 Hz). If lagging, update multiple times
+      // and skip rendering (frame skipping) to maintain real-time speed.
+      while (current_time >= next_frame_time) {
+        // demo::UpdateState();  // Future logic update
+        // music::Update();      // Future music player logic
+        video::Video::frame_count_ = video::Video::frame_count_ + 1;
+        next_frame_time += kFrameDurationNs;
+        need_render = true;
+
+        // Prevent the 'spiral of death' by capping the catch-up loop if the
+        // machine is too slow to ever hit the target frame rate.
+        if (current_time > next_frame_time + (kFrameDurationNs * 10)) {
+          next_frame_time = current_time;
+          break;
+        }
       }
-      last_time = current_time;
 
-      const uint8_t color =
-          static_cast<uint8_t>(video::Video::GetFrameCount() % 256);
-      context->video()->ClearBackBuffer(color);
+      if (need_render) {
+        const uint8_t color =
+            static_cast<uint8_t>(video::Video::GetFrameCount() % 256);
+        context->video()->ClearBackBuffer(color);
 
-      // SwapBuffers() calls WaitVSync(), which blocks until the next retrace
-      // (~70Hz). If the 30 FPS cap and the 70Hz retrace are out of sync, the
-      // effective frame rate will be limited by the slower of the two or a
-      // multiple.
-      context->video()->SwapBuffers();
-      frames_drawn++;
+        // SwapBuffers() calls WaitVSync(), which blocks until the next retrace
+        // (60Hz). Since we target 30 FPS, we effectively wait for every 2nd
+        // VSync.
+        context->video()->SwapBuffers();
+        frames_drawn++;
+      }
     }
     end_time = SystemContext::GetTimeNanoseconds();
   }

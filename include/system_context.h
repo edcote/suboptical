@@ -52,7 +52,6 @@ class SystemContext {
   static _go32_dpmi_seginfo original_timer_isr_;
   static _go32_dpmi_seginfo timer_isr_;
   static volatile uint64_t timer_ticks_;
-  static volatile int frame_accumulator_;
 
  private:
   std::unique_ptr<video::Video> video_;
