@@ -5,6 +5,8 @@
 #include <go32.h>
 #include <sys/nearptr.h>
 
+#include "include/planar_canvas.h"
+
 namespace video {
 
 namespace {
@@ -126,6 +128,8 @@ bool Video::InitModeX() {
   front_buffer_ = vga_memory_;
   back_buffer_ = vga_memory_ + kPageSize;
 
+  canvas_ = std::make_unique<PlanarCanvas>(back_buffer_, 256, 200);
+
   return true;
 }
 
@@ -138,6 +142,10 @@ void Video::SwapBuffers() {
   front_buffer_ = vga_memory_ + (active_page_ * kPageSize);
   back_buffer_ = vga_memory_ + (inactive_page * kPageSize);
 
+  if (canvas_) {
+    canvas_->SetBuffer(back_buffer_);
+  }
+
   // Update VGA hardware to display the new front buffer.
   // The Start Address register expects an offset in words.
   const uint16_t offset = active_page_ * kPageSize;
@@ -145,22 +153,6 @@ void Video::SwapBuffers() {
   outportw(kCrtcIndexPort, (uint16_t)((offset & 0xFF00) | 0x0C));
   // Index 0x0D, Start Address Low: Low byte of word offset.
   outportw(kCrtcIndexPort, (uint16_t)(((offset & 0x00FF) << 8) | 0x0D));
-}
-
-void Video::ClearBackBuffer(uint8_t color) {
-  // Index 0x02, Sequencer Map Mask: 0x0F (enable all 4 planes for clearing).
-  outportw(kSequencerIndexPort, 0x0F02);
-
-  const uint32_t color32 = color | (color << 8) | (color << 16) | (color << 24);
-  int dwords_to_clear = kPageSize / 4;
-  uint8_t* dest = back_buffer_;
-
-  asm volatile(
-      "cld\n\t"
-      "rep stosl\n\t"
-      : "+D"(dest), "+c"(dwords_to_clear)
-      : "a"(color32)
-      : "memory");
 }
 
 }  // namespace video

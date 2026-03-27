@@ -55,13 +55,10 @@ int main(void) {
       }
 
       if (need_render) {
-        const uint8_t color =
+        const uint8_t color_index =
             static_cast<uint8_t>(video::Video::GetFrameCount() % 256);
-        context->video()->ClearBackBuffer(color);
+        context->canvas()->Clear(color_index);
 
-        // SwapBuffers() calls WaitVSync(), which blocks until the next retrace
-        // (60Hz). Since we target 30 FPS, we effectively wait for every 2nd
-        // VSync.
         context->video()->SwapBuffers();
         frames_drawn++;
       }

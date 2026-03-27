@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <memory>
+
+#include "include/canvas.h"
 
 namespace video {
 
@@ -25,11 +28,11 @@ class Video {
   Video();
   ~Video();
 
-  // Initializes VGA Mode X (320x240, 256 colors, unchained).
+  // Initializes VGA Mode X (256x200, 256 colors, 60 Hz).
   bool InitModeX();
 
-  // Clears the active backbuffer with the given color.
-  void ClearBackBuffer(uint8_t color);
+  // Returns the canvas instance for current software drawing.
+  Canvas* canvas() const { return canvas_.get(); }
 
   // Returns the global frame counter, incremented at 30 Hz.
   static uint32_t GetFrameCount() { return frame_count_; }
@@ -43,6 +46,7 @@ class Video {
   static volatile uint32_t frame_count_;
 
  private:
+  std::unique_ptr<Canvas> canvas_;
   uint8_t* vga_memory_;
   uint8_t* front_buffer_;
   uint8_t* back_buffer_;

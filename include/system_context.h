@@ -43,6 +43,9 @@ class SystemContext {
     return video_.get();
   }
 
+  // Returns a shorthand pointer to the current drawing canvas.
+  video::Canvas* canvas() const { return video_ ? video_->canvas() : nullptr; }
+
   // Returns a pointer to the resource manager instance.
   resource::ResourceManager* resource_manager() const {
     return resource_manager_.get();
