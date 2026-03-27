@@ -56,8 +56,6 @@ constexpr int kCrtcDataPort = 0x3D5;
 constexpr uintptr_t kVgaMemoryAddress = 0xA0000;
 }  // namespace
 
-volatile uint32_t Video::frame_count_ = 0;
-
 Video::Video()
     : vga_memory_(nullptr),
       front_buffer_(nullptr),

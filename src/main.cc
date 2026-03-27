@@ -5,6 +5,8 @@
 
 #include "include/build_info.h"
 #include "include/bundle_reader.h"
+#include "include/color_cycle_effect.h"
+#include "include/effect.h"
 #include "include/input.h"
 #include "include/logger.h"
 #include "include/system_context.h"
@@ -29,9 +31,17 @@ int main(void) {
       return 1;
     }
 
+    // Effect lifecycle management.
+    auto current_effect = std::make_unique<demo::ColorCycleEffect>();
+    if (!current_effect->Setup(context.get())) {
+      LogError("Failed to setup effect.");
+      return 1;
+    }
+
     start_time = SystemContext::GetTimeNanoseconds();
     const uint64_t kFrameDurationNs = 1000000000ULL / 30;
     uint64_t next_frame_time = start_time;
+    uint32_t demo_tick = 0;
 
     while (!input::IsEscapePressed()) {
       bool need_render = false;
@@ -42,7 +52,9 @@ int main(void) {
       while (current_time >= next_frame_time) {
         // demo::UpdateState();  // Future logic update
         // music::Update();      // Future music player logic
-        video::Video::frame_count_ = video::Video::frame_count_ + 1;
+
+        current_effect->Update(demo_tick++);
+
         next_frame_time += kFrameDurationNs;
         need_render = true;
 
@@ -55,14 +67,13 @@ int main(void) {
       }
 
       if (need_render) {
-        const uint8_t color_index =
-            static_cast<uint8_t>(video::Video::GetFrameCount() % 256);
-        context->canvas()->Clear(color_index);
-
+        current_effect->Render(context.get());
         context->video()->SwapBuffers();
         frames_drawn++;
       }
     }
+
+    current_effect->Cleanup(context.get());
     end_time = SystemContext::GetTimeNanoseconds();
   }
 

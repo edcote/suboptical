@@ -34,16 +34,11 @@ class Video {
   // Returns the canvas instance for current software drawing.
   Canvas* canvas() const { return canvas_.get(); }
 
-  // Returns the global frame counter, incremented at 30 Hz.
-  static uint32_t GetFrameCount() { return frame_count_; }
-
   // Swaps the front and back buffers (page flipping).
   void SwapBuffers();
 
   uint8_t* back_buffer() const { return back_buffer_; }
   uint8_t* front_buffer() const { return front_buffer_; }
-
-  static volatile uint32_t frame_count_;
 
  private:
   std::unique_ptr<Canvas> canvas_;
