@@ -7,14 +7,7 @@ namespace subdemo {
 template <int N>
 Fixed<N> FixedMath<N>::Sin(uint32_t angle) {
   angle &= 1023;  // Fast modulo for power-of-two size.
-  int32_t val = kSinTableQ30.data[angle];
-
-  // Convert from Q30 to QN.
-  if constexpr (N <= 30) {
-    return Fixed<N>::FromRaw(val >> (30 - N));
-  } else {
-    return Fixed<N>::FromRaw(val << (N - 30));
-  }
+  return Fixed<N>::FromRaw(kSinTable.data[angle]);
 }
 
 template <int N>
@@ -24,20 +17,14 @@ Fixed<N> FixedMath<N>::Cos(uint32_t angle) {
 }
 
 template <int N>
-Fixed<N> FixedMath<N>::Inv(Type value) {
+Fixed<N> FixedMath<N>::Inv(Fixed<N> value) {
   int32_t raw_val = value.Raw();
   if (raw_val <= 0) return Fixed<N>::FromRaw(0);
 
   // Convert raw value to "integer" equivalent for LUT index.
   int32_t idx = raw_val >> N;
   if (idx > 0 && idx < 1024) {
-    int32_t val = kInvTableQ16.data[idx];
-    // LUT result is Q16. Convert to QN.
-    if constexpr (N <= 16) {
-      return Fixed<N>::FromRaw(val >> (16 - N));
-    } else {
-      return Fixed<N>::FromRaw(val << (N - 16));
-    }
+    return Fixed<N>::FromRaw(kInvTable.data[idx]);
   }
 
   // Fallback to high-precision hardware division.
@@ -47,7 +34,7 @@ Fixed<N> FixedMath<N>::Inv(Type value) {
 }
 
 template <int N>
-Fixed<N> FixedMath<N>::Sqrt(Type value) {
+Fixed<N> FixedMath<N>::Sqrt(Fixed<N> value) {
   int32_t raw_val = value.Raw();
   if (raw_val <= 0) return Fixed<N>::FromRaw(0);
 
