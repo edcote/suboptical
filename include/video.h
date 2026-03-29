@@ -23,6 +23,8 @@ void WaitVSync();
 // Sets 768-byte RGB palette (0-63).
 void SetPalette(const uint8_t* palette);
 
+// Manages the VGA hardware state, including mode switching, double buffering,
+// and vertical retrace synchronization.
 class Video {
  public:
   Video();
@@ -37,7 +39,10 @@ class Video {
   // Swaps the front and back buffers (page flipping).
   void SwapBuffers();
 
+  // Returns a pointer to the beginning of the currently inactive buffer.
   uint8_t* back_buffer() const { return back_buffer_; }
+
+  // Returns a pointer to the beginning of the currently visible buffer.
   uint8_t* front_buffer() const { return front_buffer_; }
 
  private:

@@ -12,6 +12,7 @@ namespace subdemo {
 SystemContext::SystemContext()
     : original_video_mode_(0x03), timers_installed_(false) {}
 
+// Static factory method to create and initialize the system context.
 std::unique_ptr<SystemContext> SystemContext::Create() {
   auto context = std::unique_ptr<SystemContext>(new SystemContext());
   if (!context->Init()) {
@@ -20,12 +21,15 @@ std::unique_ptr<SystemContext> SystemContext::Create() {
   return context;
 }
 
+// Restores original system state (timer ISRs, video mode) on cleanup.
 SystemContext::~SystemContext() {
   StopTimers();
   SetVideoMode(original_video_mode_);
   __djgpp_nearptr_disable();
 }
 
+// Performs one-time initialization of video, near pointer access, and
+// resource management.
 bool SystemContext::Init() {
   // Save original mode so we can restore it on exit.
   original_video_mode_ = GetVideoMode();

@@ -50,7 +50,7 @@ class FixedMath {
   }
 
  private:
-  // Internal compile-time table generators, specialized for format N.
+  // Internal compile-time Sine lookup table generator.
   struct SinTable {
     int32_t data[1024];
     consteval SinTable() : data{} {
@@ -62,6 +62,7 @@ class FixedMath {
     }
   };
 
+  // Internal compile-time Inverse lookup table generator.
   struct InvTable {
     int32_t data[1024];
     consteval InvTable() : data{} {

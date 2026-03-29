@@ -34,7 +34,7 @@ class ColorTable {
   // 'amount' is a fixed-point value from 0 (this) to 1 (target).
   void Interpolate(const ColorTable& target, Q16 amount);
 
-  // Shifts a range of colors for animation (classic demoscene effect).
+  // Shifts a range of colors for animation.
   // 'start' and 'end' are the inclusive indices to shift.
   // 'offset' is the number of positions to shift right (can be negative).
   void Cycle(uint8_t start, uint8_t end, int offset);

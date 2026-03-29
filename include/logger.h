@@ -12,6 +12,7 @@
 #define NDEBUG 0
 #endif
 
+// Common logging back-end.
 inline void _Log(FILE* stream, const char* level,
                  const std::source_location location, const char* format,
                  va_list args) {
@@ -29,6 +30,7 @@ inline void _Log(FILE* stream, const char* level,
 #endif
 }
 
+// Log a message at the INFO level.
 inline void _LogInfo(const std::source_location location, const char* format,
                      ...) {
   va_list args;
@@ -37,6 +39,7 @@ inline void _LogInfo(const std::source_location location, const char* format,
   va_end(args);
 }
 
+// Log a message at the ERROR level.
 inline void _LogError(const std::source_location location, const char* format,
                       ...) {
   va_list args;
@@ -45,6 +48,7 @@ inline void _LogError(const std::source_location location, const char* format,
   va_end(args);
 }
 
+// Log a message at the DEBUG level.
 inline void _LogDebug(const std::source_location location, const char* format,
                       ...) {
   va_list args;

@@ -6,7 +6,7 @@
 namespace subdemo {
 
 // Fixed is a template for signed 32-bit fixed-point arithmetic.
-// N is the number of fractional bits.
+// The template parameter N specifies the number of fractional bits.
 template <int N>
 class Fixed {
  public:
@@ -16,14 +16,22 @@ class Fixed {
   consteval explicit Fixed(std::floating_point auto val)
       : raw_(static_cast<int32_t>(val * static_cast<double>(1LL << N))) {}
 
+  // Creates a Fixed object from a raw underlying integer value.
   static constexpr Fixed FromRaw(int32_t raw_val) {
     Fixed f;
     f.raw_ = raw_val;
     return f;
   }
 
+  // Returns the underlying raw fixed-point integer.
   constexpr int32_t Raw() const { return raw_; }
+
+  // Converts the fixed-point value to an integer by truncation.
   constexpr int32_t ToInt() const { return raw_ >> N; }
+
+  // Converts the fixed-point value to a floating-point value at compile-time.
+  // This is evaluated by the compiler and cannot be called at runtime,
+  // making it safe for targets without an FPU.
   consteval float ToFloat() const {
     return static_cast<float>(raw_) / (1LL << N);
   }
@@ -71,6 +79,7 @@ class Fixed {
     return raw_ == other.raw_;
   }
 
+  // Returns a Fixed object representing the value 1.0 in this format.
   static constexpr Fixed One() { return FromRaw(1 << N); }
 
  private:

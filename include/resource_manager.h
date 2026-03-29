@@ -11,6 +11,8 @@ namespace subdemo {
 using ResourceHandle = uint32_t;
 constexpr ResourceHandle kInvalidHandle = 0;
 
+// ResourceManager handles memory allocation from a pre-allocated arena
+// and maintains handles to loaded assets for easy retrieval.
 class ResourceManager {
  public:
   // 2MB Arena for all demo assets.

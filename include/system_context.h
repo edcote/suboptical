@@ -51,7 +51,7 @@ class SystemContext {
   // Returns a pointer to the resource manager instance.
   ResourceManager* resource_manager() const { return resource_manager_.get(); }
 
-  // These must be accessible to the C ISR in src/timer.cc
+  // These must be accessible to the C ISR in src/timer.cc.
   static _go32_dpmi_seginfo original_timer_isr_;
   static _go32_dpmi_seginfo timer_isr_;
   static volatile uint64_t timer_ticks_;

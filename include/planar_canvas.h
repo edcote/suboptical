@@ -7,6 +7,7 @@ namespace subdemo {
 // It uses hardware bitmasks (Sequencer Map Mask) for drawing.
 class PlanarCanvas : public Canvas {
  public:
+  // Creates a new PlanarCanvas instance for a specific region of memory.
   PlanarCanvas(uint8_t* buffer, int width, int height);
   ~PlanarCanvas() override = default;
 

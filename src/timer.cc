@@ -15,16 +15,18 @@ constexpr int kTimerInterruptVector = 0x08;
 constexpr int kPitControlPort = 0x43;
 constexpr int kPitChannel0DataPort = 0x40;
 
+// Reprograms the Programmable Interval Timer (PIT) Channel 0.
 void ProgramPit(int divisor) {
   outportb(kPitControlPort, 0x36);  // Mode 3
   outportb(kPitChannel0DataPort, divisor & 0xFF);
   outportb(kPitChannel0DataPort, (divisor >> 8) & 0xFF);
 }
 
+// Prevent memory from being paged out to disk as ISRs must stay in RAM.
 bool LockRegion(void* address, size_t length) {
   unsigned long base_address;
   if (__dpmi_get_segment_base_address(_go32_my_ds(), &base_address) != 0) {
-    LogError("Failed to get segment base address");
+    LogError("Failed to get segment base address.");
     return false;
   }
 
@@ -33,8 +35,8 @@ bool LockRegion(void* address, size_t length) {
   region.size = length;
 
   if (__dpmi_lock_linear_region(&region) != 0) {
-    LogError("Failed to lock memory region at 0x%lx, length %u", region.address,
-             region.size);
+    LogError("Failed to lock memory region at 0x%lx, length %u.",
+             region.address, region.size);
     return false;
   }
 
@@ -47,6 +49,7 @@ _go32_dpmi_seginfo SystemContext::timer_isr_;
 volatile uint64_t SystemContext::timer_ticks_ = 0;
 
 extern "C" {
+// The interrupt service routine (ISR) called by the hardware at 1000Hz.
 void TimerISR() {
   SystemContext::timer_ticks_ = SystemContext::timer_ticks_ + 1;
 
@@ -134,7 +137,7 @@ uint64_t SystemContext::GetTimeNanoseconds() {
   asm volatile("sti");  // re-enable interrupts
 
   const uint64_t elapsed_pit_ticks = kPitDivisor1000Hz - count;
-  // `timer_ticks` is 1ms units. `elapsed_pit_ticks is ~838ns units.
+  // `timer_ticks` is 1ms units. `elapsed_pit_ticks` is ~838ns units.
   return (ticks * 1000000ULL) + (elapsed_pit_ticks * 838ULL);
 }
 
