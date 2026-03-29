@@ -7,6 +7,8 @@
 
 #include "include/logger.h"
 
+namespace subdemo {
+
 SystemContext::SystemContext()
     : original_video_mode_(0x03), timers_installed_(false) {}
 
@@ -20,26 +22,28 @@ std::unique_ptr<SystemContext> SystemContext::Create() {
 
 SystemContext::~SystemContext() {
   StopTimers();
-  video::SetVideoMode(original_video_mode_);
+  SetVideoMode(original_video_mode_);
   __djgpp_nearptr_disable();
 }
 
 bool SystemContext::Init() {
   // Save original mode so we can restore it on exit.
-  original_video_mode_ = video::GetVideoMode();
+  original_video_mode_ = GetVideoMode();
 
   if (__djgpp_nearptr_enable() == 0) {
     LogError("Failed to enable near pointer access.");
     return false;
   }
 
-  video_ = std::make_unique<video::Video>();
+  video_ = std::make_unique<Video>();
   if (!video_->InitModeX()) {
     LogError("Failed to initialize VGA Mode X.");
     return false;
   }
 
-  resource_manager_ = std::make_unique<resource::ResourceManager>();
+  resource_manager_ = std::make_unique<ResourceManager>();
 
   return true;
 }
+
+}  // namespace subdemo

@@ -5,7 +5,7 @@
 
 #include "include/bundle_reader.h"
 
-namespace resource {
+namespace subdemo {
 
 // Handle-based resource manager with an Arena Allocator for memory efficiency.
 using ResourceHandle = uint32_t;
@@ -30,7 +30,7 @@ class ResourceManager {
 
   // High-level asset loading using a BundleReader.
   // Allocates arena memory, loads/decompresses the file, and returns a handle.
-  ResourceHandle LoadFromBundle(const bundle::BundleReader& reader,
+  ResourceHandle LoadFromBundle(const BundleReader& reader,
                                 const char* filename);
 
   // Adds a resource pointer and returns a unique handle for tracking.
@@ -52,4 +52,4 @@ class ResourceManager {
   void* resources_[kMaxResources];
 };
 
-}  // namespace resource
+}  // namespace subdemo

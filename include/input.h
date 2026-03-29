@@ -1,8 +1,8 @@
 #pragma once
 
-namespace input {
+namespace subdemo {
 
 // Checks if the Escape key is currently pressed.
 bool IsEscapePressed();
 
-}  // namespace input
+}  // namespace subdemo

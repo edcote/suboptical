@@ -1,12 +1,10 @@
 #pragma once
 #include <cstdint>
 
+namespace subdemo {
 class SystemContext;
 
-namespace demo {
-
 // Effect is the base class for all demoscene visual effects.
-// It separates initialization, logic updates, and rendering.
 class Effect {
  public:
   virtual ~Effect() = default;
@@ -26,4 +24,4 @@ class Effect {
   virtual void Cleanup(SystemContext* context) = 0;
 };
 
-}  // namespace demo
+}  // namespace subdemo

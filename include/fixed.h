@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace math {
+namespace subdemo {
 
 // Fixed is a template for signed 32-bit fixed-point arithmetic.
 // N is the number of fractional bits.
@@ -82,4 +82,4 @@ using Q8 = Fixed<8>;
 using Q24 = Fixed<24>;
 using Q30 = Fixed<30>;
 
-}  // namespace math
+}  // namespace subdemo

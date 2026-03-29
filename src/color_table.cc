@@ -8,7 +8,7 @@
 #include "include/fixed_math.h"
 #include "include/video.h"
 
-namespace video {
+namespace subdemo {
 
 void ColorTable::Interpolate(const ColorTable& target, Q16 amount) {
   // Clamp amount to [0, 1] range.
@@ -23,11 +23,11 @@ void ColorTable::Interpolate(const ColorTable& target, Q16 amount) {
     const auto& c2 = target.data()[i];
 
     colors_[i].r = static_cast<uint8_t>(
-        math::FixedMath<16>::Lerp(Q16(c1.r), Q16(c2.r), amount).ToInt());
+        FixedMath<16>::Lerp(Q16(c1.r), Q16(c2.r), amount).ToInt());
     colors_[i].g = static_cast<uint8_t>(
-        math::FixedMath<16>::Lerp(Q16(c1.g), Q16(c2.g), amount).ToInt());
+        FixedMath<16>::Lerp(Q16(c1.g), Q16(c2.g), amount).ToInt());
     colors_[i].b = static_cast<uint8_t>(
-        math::FixedMath<16>::Lerp(Q16(c1.b), Q16(c2.b), amount).ToInt());
+        FixedMath<16>::Lerp(Q16(c1.b), Q16(c2.b), amount).ToInt());
   }
 }
 
@@ -58,8 +58,8 @@ void ColorTable::Clear(const RgbColor& color) {
 }
 
 void ColorTable::Apply() const {
-  // Forward to the centralized video::SetPalette function to avoid duplication.
-  video::SetPalette(reinterpret_cast<const uint8_t*>(colors_));
+  // Forward to the centralized SetPalette function to avoid duplication.
+  SetPalette(reinterpret_cast<const uint8_t*>(colors_));
 }
 
-}  // namespace video
+}  // namespace subdemo

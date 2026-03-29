@@ -2,7 +2,7 @@
 
 #include <dos.h>
 
-namespace video {
+namespace subdemo {
 
 namespace {
 constexpr int kSequencerIndexPort = 0x3C4;
@@ -42,4 +42,4 @@ void PlanarCanvas::PutPixel(int x, int y, uint8_t color_index) {
   buffer_[(y * width_ + x) >> 2] = color_index;
 }
 
-}  // namespace video
+}  // namespace subdemo

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace math {
+namespace subdemo {
 
 template <int N>
 Fixed<N> FixedMath<N>::Sin(uint32_t angle) {
@@ -24,8 +24,8 @@ Fixed<N> FixedMath<N>::Cos(uint32_t angle) {
 }
 
 template <int N>
-Fixed<N> FixedMath<N>::Inv(Type v) {
-  int32_t raw_val = v.Raw();
+Fixed<N> FixedMath<N>::Inv(Type value) {
+  int32_t raw_val = value.Raw();
   if (raw_val <= 0) return Fixed<N>::FromRaw(0);
 
   // Convert raw value to "integer" equivalent for LUT index.
@@ -47,8 +47,8 @@ Fixed<N> FixedMath<N>::Inv(Type v) {
 }
 
 template <int N>
-Fixed<N> FixedMath<N>::Sqrt(Type v) {
-  int32_t raw_val = v.Raw();
+Fixed<N> FixedMath<N>::Sqrt(Type value) {
+  int32_t raw_val = value.Raw();
   if (raw_val <= 0) return Fixed<N>::FromRaw(0);
 
   // Integer square root on (val << N).
@@ -75,4 +75,4 @@ template class FixedMath<8>;
 template class FixedMath<24>;
 template class FixedMath<30>;
 
-}  // namespace math
+}  // namespace subdemo

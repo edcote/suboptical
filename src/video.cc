@@ -7,7 +7,7 @@
 
 #include "include/planar_canvas.h"
 
-namespace video {
+namespace subdemo {
 
 namespace {
 constexpr int kVgaStatusRegisterPort = 0x3DA;
@@ -153,4 +153,4 @@ void Video::SwapBuffers() {
   outportw(kCrtcIndexPort, (uint16_t)(((offset & 0x00FF) << 8) | 0x0D));
 }
 
-}  // namespace video
+}  // namespace subdemo

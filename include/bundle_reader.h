@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 
-namespace bundle {
+namespace subdemo {
 
 // Information about a file within a SubBundle archive.
 struct BundleFileInfo {
@@ -43,4 +43,4 @@ class BundleReader {
   uint32_t file_count_ = 0;
 };
 
-}  // namespace bundle
+}  // namespace subdemo

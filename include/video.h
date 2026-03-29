@@ -5,7 +5,7 @@
 
 #include "include/canvas.h"
 
-namespace video {
+namespace subdemo {
 
 constexpr int kMode13h = 0x13;
 constexpr int kMode03h = 0x03;
@@ -48,4 +48,4 @@ class Video {
   int active_page_;
 };
 
-}  // namespace video
+}  // namespace subdemo

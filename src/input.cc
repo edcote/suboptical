@@ -2,8 +2,8 @@
 
 #include <dos.h>
 
-namespace input {
+namespace subdemo {
 
 bool IsEscapePressed() { return inportb(0x60) == 0x01; }
 
-}  // namespace input
+}  // namespace subdemo

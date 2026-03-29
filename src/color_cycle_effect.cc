@@ -3,7 +3,7 @@
 #include "include/canvas.h"
 #include "include/system_context.h"
 
-namespace demo {
+namespace subdemo {
 
 ColorCycleEffect::ColorCycleEffect() : current_color_index_(0) {}
 
@@ -22,4 +22,4 @@ void ColorCycleEffect::Render(SystemContext* context) {
 
 void ColorCycleEffect::Cleanup(SystemContext* /*context*/) {}
 
-}  // namespace demo
+}  // namespace subdemo

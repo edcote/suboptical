@@ -13,6 +13,7 @@
 #include "include/video.h"
 
 int main(void) {
+  using namespace subdemo;
   LogInfo("subdemo3[build %d]", BUILD_NUMBER);
 
   uint32_t frames_drawn = 0;
@@ -32,7 +33,7 @@ int main(void) {
     }
 
     // Effect lifecycle management.
-    auto current_effect = std::make_unique<demo::ColorCycleEffect>();
+    auto current_effect = std::make_unique<ColorCycleEffect>();
     if (!current_effect->Setup(context.get())) {
       LogError("Failed to setup effect.");
       return 1;
@@ -43,7 +44,7 @@ int main(void) {
     uint64_t next_frame_time = start_time;
     uint32_t demo_tick = 0;
 
-    while (!input::IsEscapePressed()) {
+    while (!IsEscapePressed()) {
       bool need_render = false;
       const uint64_t current_time = SystemContext::GetTimeNanoseconds();
 
@@ -91,9 +92,9 @@ int main(void) {
   LogInfo("Average FPS: %u", fps);
 
   LogInfo("Press ESC to exit...");
-  while (input::IsEscapePressed()) {
+  while (IsEscapePressed()) {
   }
-  while (!input::IsEscapePressed()) {
+  while (!IsEscapePressed()) {
   }
 
   return 0;

@@ -3,7 +3,7 @@
 
 #include "include/effect.h"
 
-namespace demo {
+namespace subdemo {
 
 // Simple test effect that cycles the screen's background color.
 class ColorCycleEffect : public Effect {
@@ -20,4 +20,4 @@ class ColorCycleEffect : public Effect {
   uint8_t current_color_index_;
 };
 
-}  // namespace demo
+}  // namespace subdemo

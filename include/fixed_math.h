@@ -3,10 +3,11 @@
 
 #include "include/fixed.h"
 
-namespace math {
+namespace subdemo {
 
-// FixedMath provides high-performance LUT-based operations for the Fixed
-// template.
+// Provides optimized mathematical operations for Fixed<N> fixed-point types,
+// including lookup-table based trigonometry, fast inverse, square root, and
+// interpolation.
 template <int N>
 class FixedMath {
  public:
@@ -18,24 +19,27 @@ class FixedMath {
   // angle: 0..1023 maps to 0..2PI. Returns Cosine in the target QN format.
   static Type Cos(uint32_t angle);
 
-  // Returns 1/v in the target QN format.
-  // Fast LUT for v (interpreted as integer) in [1..1024], else hardware idiv.
-  static Type Inv(Type v);
+  // Returns 1/value in the target QN format.
+  // Fast LUT for value (interpreted as integer) in [1..1024], else hardware
+  // idiv.
+  static Type Inv(Type value);
 
-  // Returns the square root of v using the binary-search integer root
+  // Returns the square root of value using the binary-search integer root
   // algorithm.
-  static Type Sqrt(Type v);
+  static Type Sqrt(Type value);
 
-  // Clamps v between min and max.
-  static inline Type Clamp(Type v, Type min, Type max) {
-    if (v < min) return min;
-    if (v > max) return max;
-    return v;
+  // Clamps value between min and max.
+  static inline Type Clamp(Type value, Type min, Type max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
   }
 
-  // Linear interpolation between a and b.
-  // result = a + (b - a) * t.
-  static inline Type Lerp(Type a, Type b, Type t) { return a + (b - a) * t; }
+  // Linear interpolation between start and end.
+  // result = start + (end - start) * amount.
+  static inline Type Lerp(Type start, Type end, Type amount) {
+    return start + (end - start) * amount;
+  }
 
   // Returns the Cartesian X component from polar coordinates.
   static inline Type PolarX(Type radius, uint32_t angle) {
@@ -53,8 +57,8 @@ class FixedMath {
     int32_t data[1024];
     consteval SinTable() : data{} {
       for (int i = 0; i < 1024; ++i) {
-        double rad = (2.0 * 3.14159265358979323846 * i) / 1024.0;
-        data[i] = static_cast<int32_t>(std::sin(rad) * 1073741824.0);
+        double radians = (2.0 * 3.14159265358979323846 * i) / 1024.0;
+        data[i] = static_cast<int32_t>(std::sin(radians) * 1073741824.0);
       }
     }
   };
@@ -73,4 +77,4 @@ class FixedMath {
   static constexpr InvTable kInvTableQ16 = InvTable();
 };
 
-}  // namespace math
+}  // namespace subdemo

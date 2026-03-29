@@ -9,6 +9,8 @@
 #include "include/resource_manager.h"
 #include "include/video.h"
 
+namespace subdemo {
+
 // SystemContext manages the 32-bit DOS lifecycle, including high-res timers,
 // VGA graphics state, and resource cleanup.
 class SystemContext {
@@ -37,19 +39,17 @@ class SystemContext {
   static uint64_t GetTimeNanoseconds();
 
   // Returns a pointer to the video manager instance.
-  video::Video* video() const {
+  Video* video() const {
     // Returns a pointer instead of a reference so the caller can safely check
     // for nullptr if video_ is uninitialized or Init() failed.
     return video_.get();
   }
 
   // Returns a shorthand pointer to the current drawing canvas.
-  video::Canvas* canvas() const { return video_ ? video_->canvas() : nullptr; }
+  Canvas* canvas() const { return video_ ? video_->canvas() : nullptr; }
 
   // Returns a pointer to the resource manager instance.
-  resource::ResourceManager* resource_manager() const {
-    return resource_manager_.get();
-  }
+  ResourceManager* resource_manager() const { return resource_manager_.get(); }
 
   // These must be accessible to the C ISR in src/timer.cc
   static _go32_dpmi_seginfo original_timer_isr_;
@@ -57,8 +57,10 @@ class SystemContext {
   static volatile uint64_t timer_ticks_;
 
  private:
-  std::unique_ptr<video::Video> video_;
-  std::unique_ptr<resource::ResourceManager> resource_manager_;
+  std::unique_ptr<Video> video_;
+  std::unique_ptr<ResourceManager> resource_manager_;
   int original_video_mode_;
   bool timers_installed_ = false;
 };
+
+}  // namespace subdemo

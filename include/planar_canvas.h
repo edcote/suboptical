@@ -1,7 +1,7 @@
 #pragma once
 #include "include/canvas.h"
 
-namespace video {
+namespace subdemo {
 
 // Specialization of Canvas for VGA Mode X unchained planar memory.
 // It uses hardware bitmasks (Sequencer Map Mask) for drawing.
@@ -21,4 +21,4 @@ class PlanarCanvas : public Canvas {
   int height_;
 };
 
-}  // namespace video
+}  // namespace subdemo

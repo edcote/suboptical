@@ -5,6 +5,7 @@
 #include "include/logger.h"
 #include "include/system_context.h"
 
+namespace subdemo {
 namespace {
 constexpr int kPitDivisor1000Hz = 1193;
 constexpr int kPitDefaultDivisor = 0;
@@ -136,3 +137,5 @@ uint64_t SystemContext::GetTimeNanoseconds() {
   // `timer_ticks` is 1ms units. `elapsed_pit_ticks is ~838ns units.
   return (ticks * 1000000ULL) + (elapsed_pit_ticks * 838ULL);
 }
+
+}  // namespace subdemo

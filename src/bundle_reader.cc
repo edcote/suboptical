@@ -4,7 +4,7 @@
 
 #include "include/logger.h"
 
-namespace bundle {
+namespace subdemo {
 
 namespace {
 constexpr int kHeaderSize = 8;
@@ -133,4 +133,4 @@ bool BundleReader::LoadFile(const BundleFileInfo& info, void* buffer) {
   return unpacked_written == info.unpacked_size;
 }
 
-}  // namespace bundle
+}  // namespace subdemo

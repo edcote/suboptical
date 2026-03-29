@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 
-namespace video {
+namespace subdemo {
 
 // Canvas provides an abstract interface for drawing to a memory buffer.
 class Canvas {
@@ -21,4 +21,4 @@ class Canvas {
   virtual uint8_t* buffer() const = 0;
 };
 
-}  // namespace video
+}  // namespace subdemo

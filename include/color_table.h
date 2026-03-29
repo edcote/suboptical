@@ -4,19 +4,17 @@
 
 #include "include/fixed.h"
 
-namespace video {
-
-using math::Q16;
+namespace subdemo {
 
 // Represents a single VGA color entry (R, G, B).
-// Note: Hardware VGA components are 6-bit (0-63).
+// N.B.: VGA color components are 6-bit (0-63).
 struct RgbColor {
   uint8_t r;
   uint8_t g;
   uint8_t b;
 };
 
-// Represents a 256-color palette as a lightweight "View" over raw memory.
+// Represents a 256-color palette.
 // This class does not own the palette memory; it acts as a wrapper for
 // memory managed by the ResourceManager or other system buffers.
 class ColorTable {
@@ -24,7 +22,7 @@ class ColorTable {
   // Points to an existing buffer of 256 RgbColor records.
   explicit ColorTable(RgbColor* colors) : colors_(colors) {}
 
-  // Basic manipulation.
+  // Sets the color at the specified index.
   void SetColor(uint8_t index, const RgbColor& color) {
     colors_[index] = color;
   }
@@ -33,8 +31,8 @@ class ColorTable {
   RgbColor GetColor(uint8_t index) const { return colors_[index]; }
 
   // Transitions the palette toward 'target' using linear interpolation.
-  // 'factor' is a fixed-point value from 0 (this) to 1 (target).
-  void Interpolate(const ColorTable& target, math::Q16 amount);
+  // 'amount' is a fixed-point value from 0 (this) to 1 (target).
+  void Interpolate(const ColorTable& target, Q16 amount);
 
   // Shifts a range of colors for animation (classic demoscene effect).
   // 'start' and 'end' are the inclusive indices to shift.
@@ -56,4 +54,4 @@ class ColorTable {
   RgbColor* colors_;
 };
 
-}  // namespace video
+}  // namespace subdemo

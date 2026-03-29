@@ -4,7 +4,7 @@
 
 #include "include/logger.h"
 
-namespace resource {
+namespace subdemo {
 
 ResourceManager::ResourceManager() : offset_(0) {
   memset(resources_, 0, sizeof(resources_));
@@ -41,9 +41,9 @@ void ResourceManager::ResetToMarker(size_t marker) {
   }
 }
 
-ResourceHandle ResourceManager::LoadFromBundle(
-    const bundle::BundleReader& reader, const char* filename) {
-  bundle::BundleFileInfo info;
+ResourceHandle ResourceManager::LoadFromBundle(const BundleReader& reader,
+                                               const char* filename) {
+  BundleFileInfo info;
   if (!reader.GetFileInfo(filename, &info)) {
     LogError("File not found in bundle: %s", filename);
     return kInvalidHandle;
@@ -57,7 +57,7 @@ ResourceHandle ResourceManager::LoadFromBundle(
   }
 
   // Cast to non-const for LoadFile (the API needs a mutable buffer).
-  if (!const_cast<bundle::BundleReader&>(reader).LoadFile(info, buffer)) {
+  if (!const_cast<BundleReader&>(reader).LoadFile(info, buffer)) {
     LogError("Failed to load/decompress %s from bundle.", filename);
     // Note: We don't rollback 'offset_' here to keep implementation simple.
     // The small leak is acceptable for a fatal loading failure.
@@ -98,4 +98,4 @@ void ResourceManager::Remove(ResourceHandle handle) {
   resources_[handle - 1] = nullptr;
 }
 
-}  // namespace resource
+}  // namespace subdemo
