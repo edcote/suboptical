@@ -7,7 +7,7 @@ namespace subdemo {
 template <int N>
 Fixed<N> FixedMath<N>::Sin(uint32_t angle) {
   angle &= 1023;  // Fast modulo for power-of-two size.
-  return Fixed<N>::FromRaw(kSinTable.data[angle]);
+  return Fixed<N>::FromBits(kSinTable.data[angle]);
 }
 
 template <int N>
@@ -18,28 +18,28 @@ Fixed<N> FixedMath<N>::Cos(uint32_t angle) {
 
 template <int N>
 Fixed<N> FixedMath<N>::Inv(Fixed<N> value) {
-  int32_t raw_val = value.Raw();
-  if (raw_val <= 0) return Fixed<N>::FromRaw(0);
+  int32_t bits_val = value.bits();
+  if (bits_val <= 0) return Fixed<N>::FromBits(0);
 
-  // Convert raw value to "integer" equivalent for LUT index.
-  int32_t idx = raw_val >> N;
+  // Convert raw bits value to "integer" equivalent for LUT index.
+  int32_t idx = bits_val >> N;
   if (idx > 0 && idx < 1024) {
-    return Fixed<N>::FromRaw(kInvTable.data[idx]);
+    return Fixed<N>::FromBits(kInvTable.data[idx]);
   }
 
   // Fallback to high-precision hardware division.
-  // result = (1.0 in 2*N scale) / raw_val.
-  return Fixed<N>::FromRaw(
-      static_cast<int32_t>((static_cast<int64_t>(1) << (2 * N)) / raw_val));
+  // result = (1.0 in 2*N scale) / bits_val.
+  return Fixed<N>::FromBits(
+      static_cast<int32_t>((static_cast<int64_t>(1) << (2 * N)) / bits_val));
 }
 
 template <int N>
 Fixed<N> FixedMath<N>::Sqrt(Fixed<N> value) {
-  int32_t raw_val = value.Raw();
-  if (raw_val <= 0) return Fixed<N>::FromRaw(0);
+  int32_t bits_val = value.bits();
+  if (bits_val <= 0) return Fixed<N>::FromBits(0);
 
-  // Integer square root on (val << N).
-  int64_t x = static_cast<int64_t>(raw_val) << N;
+  // Integer square root on (bits_val << N).
+  int64_t x = static_cast<int64_t>(bits_val) << N;
   int64_t res = 0;
   int64_t bit = 1LL << 62;
 
@@ -53,7 +53,7 @@ Fixed<N> FixedMath<N>::Sqrt(Fixed<N> value) {
     }
     bit >>= 2;
   }
-  return Fixed<N>::FromRaw(static_cast<int32_t>(res));
+  return Fixed<N>::FromBits(static_cast<int32_t>(res));
 }
 
 // Explicit template instantiations for common demoscene formats.

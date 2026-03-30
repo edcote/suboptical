@@ -5,8 +5,9 @@
 
 #include "include/build_info.h"
 #include "include/bundle_reader.h"
-#include "include/color_cycle_effect.h"
+#include "include/clear_effect.h"
 #include "include/effect.h"
+#include "include/effect_sequencer.h"
 #include "include/input.h"
 #include "include/logger.h"
 #include "include/system_context.h"
@@ -32,17 +33,28 @@ int main(void) {
       return 1;
     }
 
-    // Effect lifecycle management.
-    auto current_effect = std::make_unique<ColorCycleEffect>();
-    if (!current_effect->Setup(context.get())) {
-      LogError("Failed to setup effect.");
+    // Initialize the sequencer and effects.
+    auto sequencer = std::make_unique<EffectSequencer>();
+
+    auto clear_black = std::make_unique<ClearEffect>(0);  // VGA 0 = Black
+    if (!clear_black->Setup(context.get())) {
+      LogError("Failed to setup ClearEffect.");
       return 1;
     }
+
+    // Register naming for potential future use (triggering by name, etc).
+    sequencer->RegisterEffect("clear", clear_black.get());
+
+    // Define the demo timeline.
+    // 1. Always clear the background to black at lowest priority.
+    // TODO: edc - Find way to not specify the end time.
+    sequencer->AddTimelineEntry(
+        {0, 100000, -100, clear_black.get(), BlendMode::kNormal});
 
     start_time = SystemContext::GetTimeNanoseconds();
     const uint64_t kFrameDurationNs = 1000000000ULL / 30;
     uint64_t next_frame_time = start_time;
-    uint32_t demo_tick = 0;
+    uint32_t frame = 0;
 
     while (!IsEscapePressed()) {
       bool need_render = false;
@@ -54,7 +66,7 @@ int main(void) {
         // demo::UpdateState();  // Future logic update
         // music::Update();      // Future music player logic
 
-        current_effect->Update(demo_tick++);
+        sequencer->Update(frame++);
 
         next_frame_time += kFrameDurationNs;
         need_render = true;
@@ -68,13 +80,13 @@ int main(void) {
       }
 
       if (need_render) {
-        current_effect->Render(context.get());
+        sequencer->Render(context.get());
         context->video()->SwapBuffers();
         frames_drawn++;
       }
     }
 
-    current_effect->Cleanup(context.get());
+    clear_black->Cleanup(context.get());
     end_time = SystemContext::GetTimeNanoseconds();
   }
 

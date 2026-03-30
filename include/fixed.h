@@ -10,85 +10,84 @@ namespace subdemo {
 template <int N>
 class Fixed {
  public:
-  constexpr Fixed() : raw_(0) {}
+  constexpr Fixed() : bits_(0) {}
   constexpr explicit Fixed(std::integral auto val)
-      : raw_(static_cast<int32_t>(val) << N) {}
+      : bits_(static_cast<int32_t>(val) << N) {}
   consteval explicit Fixed(std::floating_point auto val)
-      : raw_(static_cast<int32_t>(val * static_cast<double>(1LL << N))) {}
+      : bits_(static_cast<int32_t>(val * static_cast<double>(1LL << N))) {}
 
-  // Creates a Fixed object from a raw underlying integer value.
-  static constexpr Fixed FromRaw(int32_t raw_val) {
+  // Creates a Fixed object from its bit-pattern.
+  static constexpr Fixed FromBits(int32_t bits_val) {
     Fixed f;
-    f.raw_ = raw_val;
+    f.bits_ = bits_val;
     return f;
   }
 
-  // Returns the underlying raw fixed-point integer.
-  constexpr int32_t Raw() const { return raw_; }
+  // Returns the underlying bit-pattern of the fixed-point number.
+  constexpr int32_t bits() const { return bits_; }
 
   // Converts the fixed-point value to an integer by truncation.
-  constexpr int32_t ToInt() const { return raw_ >> N; }
+  constexpr int32_t ToInt() const { return bits_ >> N; }
 
   // Converts the fixed-point value to a floating-point value at compile-time.
   // This is evaluated by the compiler and cannot be called at runtime,
   // making it safe for targets without an FPU.
   consteval float ToFloat() const {
-    return static_cast<float>(raw_) / (1LL << N);
+    return static_cast<float>(bits_) / (1LL << N);
   }
 
   constexpr Fixed operator+(const Fixed& other) const {
-    return FromRaw(raw_ + other.raw_);
+    return FromBits(bits_ + other.bits_);
   }
   constexpr Fixed operator-(const Fixed& other) const {
-    return FromRaw(raw_ - other.raw_);
+    return FromBits(bits_ - other.bits_);
   }
 
   constexpr Fixed operator*(const Fixed& other) const {
-    return FromRaw(
-        static_cast<int32_t>((static_cast<int64_t>(raw_) * other.raw_) >> N));
+    return FromBits(
+        static_cast<int32_t>((static_cast<int64_t>(bits_) * other.bits_) >> N));
+  }
+
+  constexpr Fixed operator*(std::integral auto scalar) const {
+    return FromBits(bits_ * static_cast<int32_t>(scalar));
   }
 
   constexpr Fixed operator/(const Fixed& other) const {
-    if (other.raw_ == 0) return FromRaw(0);
-    return FromRaw(
-        static_cast<int32_t>((static_cast<int64_t>(raw_) << N) / other.raw_));
+    if (other.bits_ == 0) return FromBits(0);
+    return FromBits(
+        static_cast<int32_t>((static_cast<int64_t>(bits_) << N) / other.bits_));
   }
 
   constexpr Fixed& operator+=(const Fixed& other) {
-    raw_ += other.raw_;
+    bits_ += other.bits_;
     return *this;
   }
   constexpr Fixed& operator-=(const Fixed& other) {
-    raw_ -= other.raw_;
+    bits_ -= other.bits_;
     return *this;
   }
 
   constexpr bool operator>(const Fixed& other) const {
-    return raw_ > other.raw_;
+    return bits_ > other.bits_;
   }
   constexpr bool operator<(const Fixed& other) const {
-    return raw_ < other.raw_;
+    return bits_ < other.bits_;
   }
   constexpr bool operator>=(const Fixed& other) const {
-    return raw_ >= other.raw_;
+    return bits_ >= other.bits_;
   }
   constexpr bool operator<=(const Fixed& other) const {
-    return raw_ <= other.raw_;
+    return bits_ <= other.bits_;
   }
   constexpr bool operator==(const Fixed& other) const {
-    return raw_ == other.raw_;
+    return bits_ == other.bits_;
   }
 
   // Returns a Fixed object representing the value 1.0 in this format.
-  static constexpr Fixed One() { return FromRaw(1 << N); }
+  static constexpr Fixed One() { return FromBits(1 << N); }
 
  private:
-  int32_t raw_;
+  int32_t bits_;
 };
-
-using Q16 = Fixed<16>;
-using Q8 = Fixed<8>;
-using Q24 = Fixed<24>;
-using Q30 = Fixed<30>;
 
 }  // namespace subdemo

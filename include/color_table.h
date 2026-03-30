@@ -32,7 +32,7 @@ class ColorTable {
 
   // Transitions the palette toward 'target' using linear interpolation.
   // 'amount' is a fixed-point value from 0 (this) to 1 (target).
-  void Interpolate(const ColorTable& target, Q16 amount);
+  void Interpolate(const ColorTable& target, Fixed<16> amount);
 
   // Shifts a range of colors for animation.
   // 'start' and 'end' are the inclusive indices to shift.

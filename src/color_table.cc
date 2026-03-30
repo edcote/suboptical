@@ -10,10 +10,10 @@
 
 namespace subdemo {
 
-void ColorTable::Interpolate(const ColorTable& target, Q16 amount) {
+void ColorTable::Interpolate(const ColorTable& target, Fixed<16> amount) {
   // Clamp amount to [0, 1] range.
-  if (amount <= Q16(0)) return;
-  if (amount >= Q16::One()) {
+  if (amount <= Fixed<16>(0)) return;
+  if (amount >= Fixed<16>::One()) {
     memcpy(colors_, target.data(), 256 * sizeof(RgbColor));
     return;
   }
@@ -23,11 +23,11 @@ void ColorTable::Interpolate(const ColorTable& target, Q16 amount) {
     const auto& c2 = target.data()[i];
 
     colors_[i].r = static_cast<uint8_t>(
-        FixedMath<16>::Lerp(Q16(c1.r), Q16(c2.r), amount).ToInt());
+        FixedMath<16>::Lerp(Fixed<16>(c1.r), Fixed<16>(c2.r), amount).ToInt());
     colors_[i].g = static_cast<uint8_t>(
-        FixedMath<16>::Lerp(Q16(c1.g), Q16(c2.g), amount).ToInt());
+        FixedMath<16>::Lerp(Fixed<16>(c1.g), Fixed<16>(c2.g), amount).ToInt());
     colors_[i].b = static_cast<uint8_t>(
-        FixedMath<16>::Lerp(Q16(c1.b), Q16(c2.b), amount).ToInt());
+        FixedMath<16>::Lerp(Fixed<16>(c1.b), Fixed<16>(c2.b), amount).ToInt());
   }
 }
 

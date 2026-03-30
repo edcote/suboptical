@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdint>
+#include "include/fixed.h"
 
 namespace subdemo {
 class SystemContext;
@@ -9,19 +9,34 @@ class Effect {
  public:
   virtual ~Effect() = default;
 
-  // Setup is called once during effect initialization.
-  // Return false if resources fail to load.
+  // Initializes resources for the effect.
+  // Returns false if resources fail to load.
   virtual bool Setup(SystemContext* context) = 0;
 
-  // Update is called at a fixed 30 Hz rate for demo logic.
-  // tick: The current global 30 Hz frame counter.
-  virtual void Update(uint32_t tick) = 0;
+  // Configures the effect with a parameter string. Called when the effect
+  // starts in the timeline.
+  virtual void Configure(const char* /*config*/) {}
 
-  // Render is called to draw the visual state into the back buffer.
+  // Updates the effect state.
+  virtual void Update(uint32_t frame, uint32_t effect_frame, Fixed<16> t) = 0;
+
+  // Draws the visual state into the system back buffer.
   virtual void Render(SystemContext* context) = 0;
 
-  // Cleanup is called once when the effect ends.
+  // Releases resources and cleans up the effect state.
   virtual void Cleanup(SystemContext* context) = 0;
+
+  // Signals a state change or periodic event to the effect.
+  virtual void Trigger(uint32_t /*trigger_id*/) {}
+
+  // Returns true if the effect is active and should be updated and rendered.
+  bool is_active() const { return is_active_; }
+
+  // Sets whether the effect is active.
+  void set_is_active(bool is_active) { is_active_ = is_active; }
+
+ protected:
+  bool is_active_ = false;
 };
 
 }  // namespace subdemo

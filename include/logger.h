@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <array>
 #include <source_location>
@@ -57,6 +58,15 @@ inline void _LogDebug(const std::source_location location, const char* format,
   fflush(stderr);
   va_end(args);
 }
+// Log a message at the FATAL level and exit.
+inline void _LogFatal(const std::source_location location, const char* format,
+                      ...) {
+  va_list args;
+  va_start(args, format);
+  _Log(stderr, "FATAL", location, format, args);
+  va_end(args);
+  exit(1);
+}
 
 #define LogInfo(format, ...) \
   _LogInfo(std::source_location::current(), format, ##__VA_ARGS__)
@@ -66,3 +76,6 @@ inline void _LogDebug(const std::source_location location, const char* format,
 
 #define LogDebug(format, ...) \
   _LogDebug(std::source_location::current(), format, ##__VA_ARGS__)
+
+#define LogFatal(format, ...) \
+  _LogFatal(std::source_location::current(), format, ##__VA_ARGS__)
