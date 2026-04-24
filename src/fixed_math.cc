@@ -56,7 +56,7 @@ Fixed<N> FixedMath<N>::Sqrt(Fixed<N> value) {
   return Fixed<N>::FromBits(static_cast<int32_t>(res));
 }
 
-// Explicit template instantiations for common demoscene formats.
+// Explicit template instantiations for common fixed-point formats.
 template class FixedMath<16>;
 template class FixedMath<8>;
 template class FixedMath<24>;

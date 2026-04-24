@@ -2,6 +2,7 @@
 #include "include/fixed.h"
 
 namespace subdemo {
+
 class SystemContext;
 
 // Effect is the base class for all demoscene visual effects.

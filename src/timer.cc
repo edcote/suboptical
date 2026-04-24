@@ -17,8 +17,26 @@ constexpr int kPitChannel0DataPort = 0x40;
 
 // Reprograms the Programmable Interval Timer (PIT) Channel 0.
 void ProgramPit(int divisor) {
-  outportb(kPitControlPort, 0x36);  // Mode 3
+  // PIT Control Word
+  // Value: 0x36 (Binary: 00110110)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  //  0  | BCD/Binary        |   0   | 16-bit binary counter
+  // 1-3 | Operating Mode    |  011  | Mode 3: Square wave generator
+  // 4-5 | Access Mode       |  11   | Access lobyte/hibyte
+  // 6-7 | Select Channel    |  00   | Channel 0
+  outportb(kPitControlPort, 0x36);
+
+  // Index 0x40: PIT Channel 0 Data Port (Low Byte)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  // 0-7 | Divisor LSB       |  VAR  | Lower 8 bits of the 16-bit divisor
   outportb(kPitChannel0DataPort, divisor & 0xFF);
+
+  // Index 0x40: PIT Channel 0 Data Port (High Byte)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  // 0-7 | Divisor MSB       |  VAR  | Upper 8 bits of the 16-bit divisor
   outportb(kPitChannel0DataPort, (divisor >> 8) & 0xFF);
 }
 
@@ -53,6 +71,11 @@ extern "C" {
 void TimerISR() {
   SystemContext::timer_ticks_ = SystemContext::timer_ticks_ + 1;
 
+  // PIC End-Of-Interrupt (EOI) Command
+  // Value: 0x20 (Binary: 00100000)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  //  5  | EOI Command       |   1   | 1 = Non-specific End-of-Interrupt
   outportb(kPic1CommandPort, kPicEndOfInterrupt);
 
   asm volatile(
@@ -122,13 +145,23 @@ uint64_t SystemContext::GetTimeNanoseconds() {
   // This prevents the ISR from firing and incrementing ticks between reads.
   asm volatile("cli");
   ticks = timer_ticks_;
-  outportb(kPitControlPort, 0x00);  // latch PIT count
+  // PIT Latch Command
+  // Value: 0x00 (Binary: 00000000)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  // 4-5 | Latch Count       |  00   | Counter Latch Command
+  // 6-7 | Select Channel    |  00   | Channel 0
+  outportb(kPitControlPort, 0x00);
   const uint8_t low = inportb(kPitChannel0DataPort);
   const uint8_t high = inportb(kPitChannel0DataPort);
   count = (high << 8) | low;
 
-  // Check if an interrupt is pending. If the counter just rolled over but
-  // the ISR hasn't run yet, we manually increment our local tick copy.
+  // PIC Read Request Register (IRR) Command
+  // Value: 0x0A (Binary: 00001010)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  // 0-1 | Select Register   |  10   | 10 = IRR (Request), 11 = ISR (Service)
+  //  3  | Read Register     |   1   | 1 = Perform Read
   outportb(kPic1CommandPort, 0x0A);
   const uint8_t irr = inportb(kPic1CommandPort);
   if ((irr & 0x01) && count > (kPitDivisor1000Hz / 2)) {

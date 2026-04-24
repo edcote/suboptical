@@ -13,7 +13,12 @@ PlanarCanvas::PlanarCanvas(uint8_t* buffer, int width, int height)
     : buffer_(buffer), width_(width), height_(height) {}
 
 void PlanarCanvas::Clear(uint8_t color_index) {
-  // Set all 4 planes in the Map Mask for block clearing.
+  // Index 0x02: Sequencer Map Mask
+  // Value: 0x0F (Binary: 00001111)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  // 0-3 | Plane Enable      |  0x0F | Enable all 4 memory planes for block
+  // clear
   outportb(kSequencerIndexPort, kMapMaskIndex);
   outportb(kSequencerIndexPort + 1, 0x0F);
 
@@ -34,7 +39,11 @@ void PlanarCanvas::Clear(uint8_t color_index) {
 }
 
 void PlanarCanvas::PutPixel(int x, int y, uint8_t color_index) {
-  // Select which plane(s) to write to (bits 0-3 correspond to planes 0-3).
+  // Index 0x02: Sequencer Map Mask
+  // Value: 1 << (x & 3)
+  // Bit | Field Name        | Value | Description
+  // ----|-------------------|-------|-------------------------------------------
+  // 0-3 | Plane Enable      |  VAR  | Select exactly one plane (0-3) based on X
   outportb(kSequencerIndexPort, kMapMaskIndex);
   outportb(kSequencerIndexPort + 1, 1 << (x & 3));
 

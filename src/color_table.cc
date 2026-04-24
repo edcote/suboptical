@@ -41,7 +41,6 @@ void ColorTable::Cycle(uint8_t start, uint8_t end, int offset) {
   if (offset == 0) return;
 
   // We need a small temporary buffer for cycling.
-  // 256 entries is only 768 bytes, safe for stack in DJGPP.
   RgbColor temp[256];
   memcpy(temp, &colors_[start], size * sizeof(RgbColor));
 
