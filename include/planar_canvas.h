@@ -16,6 +16,13 @@ class PlanarCanvas : public Canvas {
   void SetBuffer(uint8_t* buffer) override { buffer_ = buffer; }
   uint8_t* buffer() const override { return buffer_; }
 
+  void DrawChar(int x, int y, char c, uint8_t color, const Font& font) override;
+  void DrawText(int x, int y, const char* text, uint8_t color,
+                const Font& font) override;
+
+  int width() const override { return width_; }
+  int height() const override { return height_; }
+
  private:
   uint8_t* buffer_;
   int width_;

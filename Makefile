@@ -23,6 +23,12 @@ RLE_ASSETS         := $(FONT_BINS)
 DJGPP_PREFIX       ?= $(HOME)/.local/djgpp
 DJGPP_TOOLS_PREFIX ?= $(DJGPP_PREFIX)/bin/i586-pc-msdosdjgpp-
 
+# Use local venv python if available, otherwise fallback to system python.
+PYTHON             := .venv/bin/python3
+ifeq ($(wildcard $(PYTHON)),)
+  PYTHON           := python3
+endif
+
 CXX     := $(DJGPP_TOOLS_PREFIX)g++
 STRIP   := $(DJGPP_TOOLS_PREFIX)strip
 
@@ -65,12 +71,12 @@ $(TARGET_EXE): $(OBJS)
 	@chmod -x $@
 
 # Pattern rule for generating fonts.
-$(RES_DIR)/%.bin: $(RES_DIR)/%.ttf tools/gen_font_atlas.py
+$(RES_DIR)/%.bin: $(RES_DIR)/%.ttf tools/gen_raster_font.py
 	@mkdir -p $(RES_DIR)
-	python3 tools/gen_font_atlas.py --output_dir $(RES_DIR) --stem $* --font $<
+	$(PYTHON) tools/gen_raster_font.py --output_dir $(RES_DIR) --font_name $* --input_font $<
 
 $(TARGET_BUNDLE): $(FONT_BINS) tools/sb_pack.py
-	python3 tools/sb_pack.py --output $@ --raw $(RAW_ASSETS) --rle $(RLE_ASSETS)
+	$(PYTHON) tools/sb_pack.py --output $@ --raw $(RAW_ASSETS) --rle $(RLE_ASSETS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc
 	@mkdir -p $(dir $@)

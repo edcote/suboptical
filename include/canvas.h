@@ -3,6 +3,8 @@
 
 namespace subdemo {
 
+class Font;
+
 // Canvas provides an abstract interface for drawing to a memory buffer.
 class Canvas {
  public:
@@ -19,6 +21,17 @@ class Canvas {
 
   // Returns the current target memory buffer.
   virtual uint8_t* buffer() const = 0;
+
+  // Draws a single character using the provided font.
+  virtual void DrawChar(int x, int y, char c, uint8_t color,
+                        const Font& font) = 0;
+
+  // Draws a string of text using the provided font.
+  virtual void DrawText(int x, int y, const char* text, uint8_t color,
+                        const Font& font) = 0;
+
+  virtual int width() const = 0;
+  virtual int height() const = 0;
 };
 
 }  // namespace subdemo
